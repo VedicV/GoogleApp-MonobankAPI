@@ -1,0 +1,46 @@
+function apiMono() {
+  var siteV = 'https://api.monobank.ua';
+  var ss = SpreadsheetApp.getActiveSpreadsheet(); 
+  
+  var result = [];
+  var dl = 0;
+          
+       try { //пробуем
+          var token = 'ваш токен';
+          var acc = 'код счета';
+          
+          var info = '/personal/client-info'; // адрес для получения данных клиента
+          var stat = '/personal/statement/';  // адресс для получения выписок{account}/{from}/{to}
+          
+          var add = stat;  // поменять на info чтобы получить данные счетов
+          
+          var start = "начальная дата в млсек";
+          var end = start+2682000;
+          
+          var path = acc+'/'+start+'/'+end;
+          var headers = {  'X-Token': ''+token+'', 'Content-Type': 'application/json;charset=utf8'}; 
+          var options = {method: 'GET', headers: headers };
+         
+          var response = UrlFetchApp.fetch(siteV+add+path, options); // для инфо клиента убираем +add+path
+          var obj = JSON.parse(response.getContentText());
+          Logger.log(response); //смотрим в журнале результат
+                    
+          for (var j = 0; j<obj.length; j++) { // разбиваем на проводки 
+               var provodka = obj[j];
+               result[dl] = new Array(11);
+               var q=0;
+            
+               for (var y in provodka) { // тянем данные
+                result[dl][q] = provodka[y];
+                q++
+                 };
+            dl++;
+         };
+  
+ } catch(e) {Logger.log(e)}; //если ошибка см. Журнал
+
+  if (dl>0) {    
+    ss.getSheetByName('Выписки').getRange(4+num[0][0], 2, result.length, 11).setValues(result);                                 
+    ss.getSheetByName('Выписки').getRange('B4:L').sort(3);
+ };
+  }

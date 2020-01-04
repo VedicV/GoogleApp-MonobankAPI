@@ -21,7 +21,7 @@ function apiMono() {
           var headers = {  'X-Token': ''+token+'', 'Content-Type': 'application/json;charset=utf8'}; 
           var options = {method: 'GET', headers: headers };
          
-          var response = UrlFetchApp.fetch(siteV+add+path, options); // для инфо клиента убираем +add+path
+          var response = UrlFetchApp.fetch(siteV+add+path, options); // для инфо клиента убираем +add
           var obj = JSON.parse(response.getContentText());
           Logger.log(response); //смотрим в журнале результат
                     
